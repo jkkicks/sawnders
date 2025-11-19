@@ -1,0 +1,13 @@
+# Planning directory
+/planning/
+planning/
+
+# Claude-related files and directories
+claude*
+*claude*
+.claude/
+.claude.json
+.claude.json.backup
+*.claude
+.claude-*
+claude-*
