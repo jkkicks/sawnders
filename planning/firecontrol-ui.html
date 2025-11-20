@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireControl - Langmuir Systems</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: #2e3130;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .window-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .window-btn {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .minimize { background: #ffa500; }
+        .maximize { background: #00ff00; }
+        .close { background: #ff4444; }
+
+        /* Header */
+        .header {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid #333;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff6b35, #ff9558);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .brand-text {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .brand-text .fire {
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .brand-text .control {
+            font-weight: 300;
+        }
+
+        .by-text {
+            color: #666;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .langmuir {
+            color: #888;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-chip {
+            background: #5da21f;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-chip.crossfire {
+            background: #ff9558;
+        }
+
+        .units-display {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+            background: #121212;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Control Buttons */
+        .control-section {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .griddle-info {
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #aaa;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-start {
+            background: #5da21f;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #6fb830;
+        }
+
+        .btn-pause {
+            background: #3a3a3a;
+            color: #888;
+        }
+
+        .btn-pause:hover {
+            background: #4a4a4a;
+            color: #fff;
+        }
+
+        .btn-stop {
+            background: #b83219;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-stop:hover {
+            background: #d13919;
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #aaa;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        /* THC Control Section */
+        .thc-section {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .thc-header {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .thc-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .thc-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .thc-live {
+            background: #b83219;
+            color: white;
+        }
+
+        .thc-nominal {
+            background: #5da21f;
+            color: white;
+        }
+
+        .tolerance-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .tolerance-value {
+            color: #5da21f;
+            font-weight: bold;
+        }
+
+        /* Settings Toggle */
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .test-btn {
+            background: #ff6b35;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .settings-btn {
+            background: #2a2a2a;
+            color: #888;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .toggle {
+            width: 40px;
+            height: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle.active {
+            background: #5da21f;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #666;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .toggle.active .toggle-slider {
+            left: 22px;
+            background: white;
+        }
+
+        /* Speed Controls */
+        .speed-display {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .speed-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .speed-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Pattern Controls */
+        .pattern-section {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .pattern-header {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Middle Panel - Visualizer */
+        .middle-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .visualizer {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visualizer-content {
+            color: #444;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .visualizer-toolbar {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .fit-label {
+            color: #888;
+            margin-right: 10px;
+            align-self: center;
+        }
+
+        .view-btn {
+            padding: 8px 15px;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .view-btn:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        .view-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .show-machine-toggle {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: #2a2a2a;
+            border-radius: 5px;
+        }
+
+        /* G-code Preview */
+        .gcode-preview {
+            height: 200px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .gcode-line {
+            display: flex;
+            padding: 2px 0;
+        }
+
+        .gcode-line-number {
+            width: 50px;
+            color: #444;
+            margin-right: 20px;
+        }
+
+        .gcode-content {
+            flex: 1;
+            color: #888;
+        }
+
+        .gcode-content.comment {
+            color: #555;
+        }
+
+        .gcode-content.command {
+            color: #5da21f;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .status-item {
+            padding: 5px 10px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            color: #666;
+        }
+
+        .status-item.active {
+            color: #5da21f;
+        }
+
+        .status-label {
+            color: #888;
+            margin-right: 5px;
+        }
+
+        .status-value {
+            font-weight: bold;
+        }
+
+        .idle-indicator {
+            background: #3851fe;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .coordinate-display {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .coordinate-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .work-machine-toggle {
+            display: flex;
+            gap: 5px;
+        }
+
+        .toggle-btn {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            background: #2a2a2a;
+            color: #666;
+        }
+
+        .toggle-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .coordinate-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .coordinate-label {
+            color: #888;
+            font-size: 14px;
+            font-weight: bold;
+            width: 30px;
+        }
+
+        .coordinate-value {
+            flex: 1;
+            text-align: right;
+            color: #fff;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .zero-btn {
+            padding: 4px 10px;
+            background: #3a3a3a;
+            border: none;
+            border-radius: 5px;
+            color: #5da21f;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+
+        .zero-all-btn {
+            width: 100%;
+            padding: 10px;
+            background: #3851fe;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Jog Controls */
+        .jog-section {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .jog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .jog-mode-toggle {
+            display: flex;
+            gap: 5px;
+        }
+
+        .jog-speed-selector {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .speed-option {
+            flex: 1;
+            padding: 8px;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #888;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .speed-option.active {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .jog-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .jog-btn {
+            aspect-ratio: 1;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .jog-btn:hover {
+            background: #3a3a3a;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .jog-btn:active {
+            transform: scale(0.95);
+        }
+
+        .jog-btn.home {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .z-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .z-btn {
+            padding: 10px 20px;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .z-btn:hover {
+            background: #3a3a3a;
+            color: white;
+        }
+
+        /* Manual Controls */
+        .manual-section {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .manual-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 5px;
+            color: #888;
+            cursor: pointer;
+            margin-bottom: 8px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .manual-btn:hover {
+            background: #3a3a3a;
+            color: white;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <span style="color: #888; font-size: 12px;">FireControl V2.1.13</span>
+        <div class="window-controls">
+            <button class="window-btn minimize"></button>
+            <button class="window-btn maximize"></button>
+            <button class="window-btn close"></button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🔥</div>
+            <div class="brand-text">
+                <span class="fire">FIRE</span><span class="control">CONTROL</span>
+            </div>
+            <span class="by-text">by</span>
+            <span class="langmuir">LANGMUIR SYSTEMS</span>
+        </div>
+        <div class="header-right">
+            <div class="status-chip">
+                LS-THC [v1.1n]
+            </div>
+            <div class="status-chip crossfire">
+                CrossFire [v1.3b]
+            </div>
+            <div class="units-display">UNITS: in</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="griddle-info">
+                    <span>Griddle Press 60 ipm</span>
+                    <span>📁 📥</span>
+                </div>
+                <div class="button-row">
+                    <button class="control-btn btn-start">
+                        ▶ START
+                    </button>
+                    <button class="control-btn btn-pause">
+                        ⏸ PAUSE
+                    </button>
+                </div>
+                <button class="control-btn btn-stop">
+                    ⏹ STOP
+                </button>
+                <div class="button-row" style="margin-top: 10px;">
+                    <button class="control-btn btn-secondary">
+                        🔥 TORCH FIRE
+                    </button>
+                    <button class="control-btn btn-secondary">
+                        GO TO WORK ZERO
+                    </button>
+                </div>
+                <div class="button-row">
+                    <button class="control-btn btn-secondary">
+                        DRY RUN
+                    </button>
+                    <button class="control-btn btn-secondary">
+                        SET PROGRAM ORIGIN
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feed Rate Override -->
+            <div class="control-section">
+                <div style="color: #888; font-size: 12px; margin-bottom: 10px;">Feed Rate Override</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <input type="range" min="10" max="200" value="100" style="flex: 1; margin-right: 10px;">
+                    <span style="color: #fff; font-weight: bold;">100%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">-10</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">-1</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">+1</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">+10</button>
+                </div>
+            </div>
+
+            <!-- Pierce Delay Override -->
+            <div class="control-section">
+                <div style="color: #888; font-size: 12px; margin-bottom: 10px;">Pierce Delay Override</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <input type="range" min="10" max="200" value="100" style="flex: 1; margin-right: 10px;">
+                    <span style="color: #fff; font-weight: bold;">100%</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">-10</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">-1</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">+1</button>
+                    <button style="padding: 4px 8px; background: #2a2a2a; border: none; border-radius: 3px; color: #888; cursor: pointer;">+10</button>
+                </div>
+            </div>
+
+            <!-- THC Control -->
+            <div class="thc-section">
+                <div class="thc-header">THC CONTROL</div>
+                <div class="settings-row">
+                    <button class="test-btn">TEST</button>
+                    <button class="settings-btn">⚙ SETTINGS</button>
+                </div>
+                <div class="thc-controls">
+                    <button class="thc-btn thc-live">Live 0.0V</button>
+                    <button class="thc-btn thc-nominal">Nominal +SMART V</button>
+                </div>
+                <div class="tolerance-display">
+                    <span>Tolerance</span>
+                    <span class="tolerance-value">± 1.5 V</span>
+                </div>
+                <div class="toggle-switch">
+                    <span style="color: #888; font-size: 12px;">ACTIVE</span>
+                    <div class="toggle active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span style="color: #888; font-size: 12px;">DOWN</span>
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span style="color: #888; font-size: 12px;">OK</span>
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span style="color: #888; font-size: 12px;">UP</span>
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="speed-display">
+                    <div>
+                        <div class="speed-label">Torch Speed</div>
+                        <div class="speed-value">0.0</div>
+                    </div>
+                    <div>
+                        <div class="speed-label">Program Speed</div>
+                        <div class="speed-value">60</div>
+                    </div>
+                </div>
+                <div class="speed-display">
+                    <div>
+                        <div class="speed-label">Torch Speed CUTOFF</div>
+                        <div class="speed-value">85.0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Controls -->
+            <div class="pattern-section">
+                <div class="pattern-header">STRAIGHT CUT</div>
+                <div class="toggle-switch">
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="pattern-header" style="margin-top: 10px;">SCALE & ROTATE</div>
+                <div class="toggle-switch">
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="pattern-header" style="margin-top: 10px;">PATTERNING</div>
+                <div class="toggle-switch">
+                    <div class="toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Panel -->
+        <div class="middle-panel">
+            <!-- Visualizer -->
+            <div class="visualizer">
+                <div class="visualizer-content">
+                    <div style="font-size: 48px;">📐</div>
+                    <div>3D Visualization Area</div>
+                </div>
+            </div>
+
+            <!-- Visualizer Toolbar -->
+            <div class="visualizer-toolbar">
+                <span class="fit-label">Fit:</span>
+                <button class="view-btn active">
+                    <span style="width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 50%;"></span>
+                    Part
+                </button>
+                <button class="view-btn">
+                    <span style="width: 16px; height: 16px; border: 2px solid currentColor;"></span>
+                    Machine
+                </button>
+                <div class="show-machine-toggle">
+                    <div class="toggle active">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span style="color: #aaa; font-size: 14px;">Show Machine</span>
+                </div>
+            </div>
+
+            <!-- G-code Preview -->
+            <div class="gcode-preview">
+                <div class="gcode-line">
+                    <span class="gcode-line-number">1</span>
+                    <span class="gcode-content comment">(v1.6-af)</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">2</span>
+                    <span class="gcode-content command">G90 G94</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">3</span>
+                    <span class="gcode-content command">G17</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">4</span>
+                    <span class="gcode-content command">G20</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">5</span>
+                    <span class="gcode-content command">H0</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">6</span>
+                    <span class="gcode-content"></span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">7</span>
+                    <span class="gcode-content comment">(2D Profile1)</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">8</span>
+                    <span class="gcode-content command">G0 X-15.451 Y3.5767</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">9</span>
+                    <span class="gcode-content command">G92 Z0.</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">10</span>
+                    <span class="gcode-content command">G38.2 Z-5. F100.</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">11</span>
+                    <span class="gcode-content command">G38.4 Z0.5 F20.</span>
+                </div>
+                <div class="gcode-line">
+                    <span class="gcode-line-number">12</span>
+                    <span class="gcode-content command">G92 Z0.</span>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-label">Torch</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">IHS</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">X</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Y1</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Y2</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-left: 20px;">
+                    <span class="status-label">Status:</span>
+                    <span class="idle-indicator">Idle</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-left: 20px;">
+                    <span class="status-label">Elapsed:</span>
+                    <span style="background: #202020; padding: 2px 8px; border-radius: 5px; color: white; font-size: 11px; margin-left: 5px;">00:00:00</span>
+                </div>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 15px; background: #2a2a2a; padding: 5px 10px; border-radius: 5px;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span class="status-label">Pierces:</span>
+                        <span style="background: #202020; padding: 2px 8px; border-radius: 5px; color: white; font-size: 11px;">0</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <span class="status-label">Torch Time:</span>
+                        <span style="background: #202020; padding: 2px 8px; border-radius: 5px; color: white; font-size: 11px;">00:00:00</span>
+                    </div>
+                    <button style="width: 24px; height: 24px; background: #e47929; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold;">↻</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Coordinate Display -->
+            <div class="coordinate-display">
+                <div class="coordinate-header">
+                    <div class="work-machine-toggle">
+                        <button class="toggle-btn active">WORK</button>
+                        <button class="toggle-btn">MACHINE</button>
+                    </div>
+                    <button class="zero-all-btn" style="width: auto; padding: 5px 15px; margin-top: 0; font-size: 12px;">ZERO ALL WORK AXES</button>
+                </div>
+                <div class="coordinate-row">
+                    <span class="coordinate-label">X</span>
+                    <span class="coordinate-value">0.000</span>
+                    <button class="zero-btn">ZERO</button>
+                </div>
+                <div class="coordinate-row">
+                    <span class="coordinate-label">Y</span>
+                    <span class="coordinate-value">0.000</span>
+                    <button class="zero-btn">ZERO</button>
+                </div>
+                <div class="coordinate-row">
+                    <span class="coordinate-label">Z</span>
+                    <span class="coordinate-value">-0.937</span>
+                    <button class="zero-btn">ZERO</button>
+                </div>
+            </div>
+
+            <!-- Jog Controls -->
+            <div class="jog-section">
+                <div class="jog-header">
+                    <span style="color: #888; font-size: 12px;">JOG MODE</span>
+                    <div class="jog-mode-toggle">
+                        <button class="toggle-btn active">HOME</button>
+                        <button class="toggle-btn">CONTINUOUS</button>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #888; font-size: 12px;">JOG SPEED</span>
+                    <span style="color: #fff; font-weight: bold;">10 IPM</span>
+                </div>
+                <div class="jog-speed-selector">
+                    <button class="speed-option">1/16" STEP<br>50 IPM</button>
+                    <button class="speed-option">1/8" STEP<br>100 IPM</button>
+                    <button class="speed-option">1/4" STEP<br>200 IPM</button>
+                    <button class="speed-option active">1" STEP<br>300 IPM</button>
+                </div>
+                <div class="jog-controls">
+                    <button class="jog-btn" style="grid-column: 1; grid-row: 1;">↖</button>
+                    <button class="jog-btn" style="grid-column: 2; grid-row: 1;">↑</button>
+                    <button class="jog-btn" style="grid-column: 3; grid-row: 1;">↗</button>
+                    <button class="jog-btn" style="grid-column: 1; grid-row: 2;">←</button>
+                    <button class="jog-btn home">⌂</button>
+                    <button class="jog-btn" style="grid-column: 3; grid-row: 2;">→</button>
+                    <button class="jog-btn" style="grid-column: 1; grid-row: 3;">↙</button>
+                    <button class="jog-btn" style="grid-column: 2; grid-row: 3;">↓</button>
+                    <button class="jog-btn" style="grid-column: 3; grid-row: 3;">↘</button>
+                </div>
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <span style="color: #888; font-size: 12px;">Z-AXIS</span>
+                </div>
+                <div class="z-controls">
+                    <button class="z-btn">+Z ↑</button>
+                    <button class="z-btn">-Z ↓</button>
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <span style="color: #888; font-size: 12px;">+X →&nbsp;&nbsp;&nbsp;&nbsp;-X ←</span><br>
+                    <span style="color: #888; font-size: 12px;">+Y ↑&nbsp;&nbsp;&nbsp;&nbsp;-Y ↓</span>
+                </div>
+            </div>
+
+            <!-- Manual Controls -->
+            <div class="manual-section">
+                <button class="manual-btn">
+                    <span>Manual</span>
+                    <span>NEST</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle switches
+            const toggles = document.querySelectorAll('.toggle');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // View buttons
+            const viewBtns = document.querySelectorAll('.view-btn');
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Toggle buttons
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Speed options
+            const speedOptions = document.querySelectorAll('.speed-option');
+            speedOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    speedOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Jog buttons
+            const jogBtns = document.querySelectorAll('.jog-btn, .z-btn');
+            jogBtns.forEach(btn => {
+                btn.addEventListener('mousedown', function() {
+                    this.style.background = '#ff6b35';
+                    this.style.color = 'white';
+                });
+                btn.addEventListener('mouseup', function() {
+                    this.style.background = '#2a2a2a';
+                    this.style.color = '#aaa';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.background = '#2a2a2a';
+                    this.style.color = '#aaa';
+                });
+            });
+
+            // Control buttons
+            const startBtn = document.querySelector('.btn-start');
+            const pauseBtn = document.querySelector('.btn-pause');
+            const stopBtn = document.querySelector('.btn-stop');
+
+            startBtn.addEventListener('click', function() {
+                console.log('Start clicked');
+            });
+
+            pauseBtn.addEventListener('click', function() {
+                console.log('Pause clicked');
+            });
+
+            stopBtn.addEventListener('click', function() {
+                console.log('Stop clicked');
+            });
+        });
+    </script>
+</body>
+</html>
