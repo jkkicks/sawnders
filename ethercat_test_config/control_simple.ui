@@ -103,6 +103,19 @@
     <string>STOP</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="homeButton">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>250</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Home All</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

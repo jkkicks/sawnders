@@ -32,6 +32,7 @@ class HandlerClass:
         # Connect buttons - use lambda to ensure we capture the event
         self.w.enableButton.clicked.connect(self.enable_clicked)
         self.w.stopButton.clicked.connect(self.stop_clicked)
+        self.w.homeButton.clicked.connect(self.home_clicked)
 
         self.w.jogPosButton.pressed.connect(self.jog_pos_pressed)
         self.w.jogPosButton.released.connect(self.jog_released)
@@ -44,28 +45,47 @@ class HandlerClass:
         """Handle enable button click"""
         print("Enable button clicked!")
         try:
-            STAT.poll()
             if self.w.enableButton.isChecked():
-                print("Attempting to enable machine...")
+                # Multi-step enable process
+                print("Step 1: Checking current state...")
+                STAT.poll()
                 print(f"Current state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task state: {STAT.task_state}")
 
-                # Reset E-stop first
-                COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
-                COMMAND.wait_complete(1.0)  # Wait up to 1 second
+                # Step 1: If in E-stop, reset it
+                if STAT.estop != 0:
+                    print("Step 2: Resetting E-stop...")
+                    COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
+                    # Small delay to let it process
+                    import time
+                    time.sleep(0.5)
 
-                # Then turn on
-                COMMAND.state(linuxcnc.STATE_ON)
-                COMMAND.wait_complete(1.0)  # Wait up to 1 second
+                    # Check if E-stop was reset
+                    STAT.poll()
+                    print(f"After E-stop reset - E-stop: {STAT.estop}")
 
-                # Check if it worked
-                STAT.poll()
-                if STAT.enabled:
-                    self.w.enableButton.setText("Disable")
-                    self.w.enableButton.setStyleSheet("background-color: green;")
-                    print("Machine SUCCESSFULLY enabled!")
+                # Step 2: Turn machine on
+                if STAT.estop == 0:
+                    print("Step 3: Turning machine ON...")
+                    COMMAND.state(linuxcnc.STATE_ON)
+                    time.sleep(0.5)
+
+                    # Final check
+                    STAT.poll()
+                    print(f"Final state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task state: {STAT.task_state}")
+
+                    if STAT.enabled:
+                        self.w.enableButton.setText("Disable")
+                        self.w.enableButton.setStyleSheet("background-color: green;")
+                        print("SUCCESS! Machine is enabled and ready to jog!")
+                    else:
+                        print("Machine still not enabled. May need to home first.")
+                        # Try to home automatically
+                        print("Attempting to home all joints...")
+                        COMMAND.home(0)  # Home joint 0
                 else:
-                    print(f"Failed to enable - E-stop: {STAT.estop}, Enabled: {STAT.enabled}")
+                    print("ERROR: Could not reset E-stop!")
                     self.w.enableButton.setChecked(False)
+
             else:
                 print("Disabling machine...")
                 COMMAND.state(linuxcnc.STATE_OFF)
@@ -74,6 +94,8 @@ class HandlerClass:
                 print("Machine disabled")
         except Exception as e:
             print(f"Error in enable_clicked: {e}")
+            import traceback
+            traceback.print_exc()
 
     def stop_clicked(self):
         """Handle stop button click"""
@@ -86,6 +108,20 @@ class HandlerClass:
             print("E-STOP activated")
         except Exception as e:
             print(f"Error in stop_clicked: {e}")
+
+    def home_clicked(self):
+        """Handle home button click"""
+        print("Home button clicked!")
+        try:
+            STAT.poll()
+            if STAT.enabled:
+                print("Homing all joints...")
+                COMMAND.home(0)  # Home joint 0 (X axis)
+                print("Homing command sent")
+            else:
+                print("Machine must be enabled before homing")
+        except Exception as e:
+            print(f"Error in home_clicked: {e}")
 
     def jog_pos_pressed(self):
         """Start positive jog"""
