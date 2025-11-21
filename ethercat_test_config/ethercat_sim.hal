@@ -5,14 +5,7 @@
 loadrt trivkins coordinates=X
 loadrt motmod servo_period_nsec=1000000 num_joints=1
 
-# Load a simulated encoder for position feedback
-loadrt sim_encoder names=sim_encoder.0
-loadrt ddt names=ddt.0
-
-# Add functions to servo thread
-addf sim-encoder.make-pulses base-thread
-addf sim-encoder.update-speed servo-thread
-addf ddt.0 servo-thread
+# Add functions to servo thread ONLY (no base thread needed)
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
 
