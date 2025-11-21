@@ -28,3 +28,6 @@ net x-enable joint.0.amp-enable-out
 
 # E-stop loopback - connect e-stop loop for simulation
 net estop-loop iocontrol.0.user-enable-out iocontrol.0.emc-enable-in
+
+# Home switch simulation - always triggered for instant homing
+net home-x joint.0.home-sw-in <= joint.0.homing

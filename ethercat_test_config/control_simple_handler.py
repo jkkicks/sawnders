@@ -91,10 +91,9 @@ class HandlerClass:
                         self.w.enableButton.setStyleSheet("background-color: green;")
                         print("SUCCESS! Machine is enabled!")
 
-                        # Try to home automatically if not homed
+                        # Don't auto-home - let user do it manually if needed
                         if not STAT.homed[0]:
-                            print("Joint 0 not homed, sending home command...")
-                            COMMAND.home(0)
+                            print("Note: Joint 0 is not homed. Click 'Home All' if needed.")
                     else:
                         print("Machine not fully enabled yet")
                         print(f"Task state value: {STAT.task_state}")
@@ -153,13 +152,21 @@ class HandlerClass:
         try:
             STAT.poll()
             if STAT.enabled:
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, 10)
+                # Try axis mode jogging (axis 0 = X)
+                # jog(command, axis_or_joint, axis_num, velocity)
+                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, 10)  # Axis mode (1), axis 0 (X), +10 units/sec
                 self.hal["jog-pos"] = True
-                print("Jogging positive")
+                print("Jogging X axis positive")
             else:
                 print("Machine not enabled, cannot jog")
         except Exception as e:
             print(f"Error in jog_pos: {e}")
+            # Try alternative joint jog format
+            try:
+                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 10)
+                print("Using alternative jog format")
+            except:
+                pass
 
     def jog_neg_pressed(self):
         """Start negative jog"""
@@ -167,24 +174,39 @@ class HandlerClass:
         try:
             STAT.poll()
             if STAT.enabled:
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, -10)
+                # Try axis mode jogging (axis 0 = X)
+                # jog(command, axis_or_joint, axis_num, velocity)
+                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, -10)  # Axis mode (1), axis 0 (X), -10 units/sec
                 self.hal["jog-neg"] = True
-                print("Jogging negative")
+                print("Jogging X axis negative")
             else:
                 print("Machine not enabled, cannot jog")
         except Exception as e:
             print(f"Error in jog_neg: {e}")
+            # Try alternative joint jog format
+            try:
+                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, -10)
+                print("Using alternative jog format")
+            except:
+                pass
 
     def jog_released(self):
         """Stop jogging"""
         print("Jog released")
         try:
-            COMMAND.jog(linuxcnc.JOG_STOP, 0, 0)
+            # Stop axis 0 (X)
+            COMMAND.jog(linuxcnc.JOG_STOP, 1, 0)  # Axis mode, axis 0
             self.hal["jog-pos"] = False
             self.hal["jog-neg"] = False
             print("Jog stopped")
         except Exception as e:
             print(f"Error stopping jog: {e}")
+            # Try alternative stop format
+            try:
+                COMMAND.jog(linuxcnc.JOG_STOP, 0)
+                print("Using alternative stop format")
+            except:
+                pass
 
     def update_position(self):
         """Update position display"""
