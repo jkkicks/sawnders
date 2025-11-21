@@ -1,0 +1,80 @@
+# This is an example wiring diagram for testing
+
+connectors:
+  terminal_block_1:
+    type: Terminal Block
+    subtype: 12-position
+    pinlabels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    notes: Main terminal block for field devices
+
+  x_axis_motor:
+    type: Stepper Motor
+    subtype: NEMA 23
+    pinlabels: [A+, A-, B+, B-]
+    notes: X-axis drive motor
+
+  y_axis_motor:
+    type: Stepper Motor
+    subtype: NEMA 23
+    pinlabels: [A+, A-, B+, B-]
+    notes: Y-axis drive motor
+
+  z_axis_motor:
+    type: Stepper Motor
+    subtype: NEMA 23
+    pinlabels: [A+, A-, B+, B-]
+    notes: Z-axis drive motor
+
+  limit_switches:
+    type: Limit Switch Block
+    pinlabels: [X+, X-, Y+, Y-, Z+, Z-, COM]
+    notes: Home and limit switches
+
+cables:
+  motor_cable_x:
+    wirecount: 4
+    gauge: 18 AWG
+    colors: [RD, GN, YE, BU]
+    shield: true
+    notes: X-axis motor cable
+
+  motor_cable_y:
+    wirecount: 4
+    gauge: 18 AWG
+    colors: [RD, GN, YE, BU]
+    shield: true
+    notes: Y-axis motor cable
+
+  motor_cable_z:
+    wirecount: 4
+    gauge: 18 AWG
+    colors: [RD, GN, YE, BU]
+    shield: true
+    notes: Z-axis motor cable
+
+  limit_cable:
+    wirecount: 7
+    gauge: 22 AWG
+    colors: [RD, OR, YE, GN, BU, VI, BK]
+    shield: true
+    notes: Limit switch cable
+
+connections:
+  - - terminal_block_1: [1, 2, 3, 4]
+    - motor_cable_x: [1, 2, 3, 4]
+    - x_axis_motor: [A+, A-, B+, B-]
+
+  - - terminal_block_1: [5, 6, 7, 8]
+    - motor_cable_y: [1, 2, 3, 4]
+    - y_axis_motor: [A+, A-, B+, B-]
+
+  - - terminal_block_1: [9, 10, 11, 12]
+    - motor_cable_z: [1, 2, 3, 4]
+    - z_axis_motor: [A+, A-, B+, B-]
+
+metadata:
+  title: Sawnders External Connections
+  description: Wiring for motors and field devices
+  revision: 1.0
+  date: 2025-11-21
+  author: Your Name
