@@ -5,12 +5,23 @@
 loadrt trivkins coordinates=X
 loadrt motmod servo_period_nsec=1000000 num_joints=1
 
-# Add functions to servo thread ONLY (no base thread needed)
+# Load limit3 for simple position simulation
+loadrt limit3 count=1
+
+# Add functions to servo thread
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
+addf limit3.0 servo-thread
 
-# Simulated axis - loop position command back to feedback
-net x-pos-cmd joint.0.motor-pos-cmd => joint.0.motor-pos-fb
+# Simple simulated axis using limit3 (integrator with limits)
+# This will smoothly move to commanded position
+net x-pos-cmd joint.0.motor-pos-cmd => limit3.0.in
+net x-pos-fb limit3.0.out => joint.0.motor-pos-fb
+
+# Set reasonable limits for smooth motion
+setp limit3.0.maxv 50     # Max velocity
+setp limit3.0.maxa 100    # Max acceleration
+setp limit3.0.enable 1    # Enable the limit3 block
 
 # Simple enable chain
 net x-enable joint.0.amp-enable-out
