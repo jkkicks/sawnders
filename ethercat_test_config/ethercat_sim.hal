@@ -1,0 +1,37 @@
+# SUPER SIMPLE HAL Configuration - SIMULATED (NO HARDWARE)
+# For testing the UI without EtherCAT hardware
+
+# Load trivkins kinematics and motion controller
+loadrt trivkins coordinates=X
+loadrt motmod servo_period_nsec=1000000 num_joints=1
+
+# Load a simulated encoder for position feedback
+loadrt sim_encoder names=sim_encoder.0
+loadrt ddt names=ddt.0
+
+# Add functions to servo thread
+addf sim-encoder.make-pulses base-thread
+addf sim-encoder.update-speed servo-thread
+addf ddt.0 servo-thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+
+# Create simple jog signals
+net jog-x-pos halui.axis.x.plus
+net jog-x-neg halui.axis.x.minus
+net jog-speed halui.axis.jog-speed
+
+# Simulated axis - loop position command back to feedback
+net x-pos-cmd joint.0.motor-pos-cmd => joint.0.motor-pos-fb
+
+# Simple enable chain
+net x-enable joint.0.amp-enable-out
+
+# Basic setup for joint 0
+setp joint.0.jog-vel-mode 1
+setp halui.axis.jog-speed 10
+
+# Machine on/off
+net machine-on halui.machine.on
+net machine-off halui.machine.off
+net machine-is-on halui.machine.is-on
