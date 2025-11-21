@@ -44,46 +44,68 @@ class HandlerClass:
     def enable_clicked(self):
         """Handle enable button click"""
         print("Enable button clicked!")
+        import time
+
         try:
             if self.w.enableButton.isChecked():
-                # Multi-step enable process
-                print("Step 1: Checking current state...")
+                # Get initial state
                 STAT.poll()
-                print(f"Current state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task state: {STAT.task_state}")
+                print(f"Initial state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task mode: {STAT.task_mode}, Task state: {STAT.task_state}")
 
-                # Step 1: If in E-stop, reset it
-                if STAT.estop != 0:
-                    print("Step 2: Resetting E-stop...")
-                    COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
-                    # Small delay to let it process
-                    import time
-                    time.sleep(0.5)
+                # Make sure we're in manual mode
+                print("Setting mode to MANUAL...")
+                COMMAND.mode(linuxcnc.MODE_MANUAL)
+                time.sleep(0.2)
 
-                    # Check if E-stop was reset
+                # Try multiple times to reset E-stop
+                for attempt in range(3):
                     STAT.poll()
-                    print(f"After E-stop reset - E-stop: {STAT.estop}")
+                    if STAT.estop != 0:
+                        print(f"Attempt {attempt + 1}: Resetting E-stop...")
+                        COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
+                        time.sleep(0.5)
 
-                # Step 2: Turn machine on
+                        STAT.poll()
+                        if STAT.estop == 0:
+                            print("E-stop successfully reset!")
+                            break
+                        else:
+                            print(f"E-stop still active after attempt {attempt + 1}")
+                    else:
+                        print("E-stop already reset")
+                        break
+
+                # Now try to turn on if E-stop is clear
+                STAT.poll()
                 if STAT.estop == 0:
-                    print("Step 3: Turning machine ON...")
+                    print("Turning machine ON...")
                     COMMAND.state(linuxcnc.STATE_ON)
                     time.sleep(0.5)
 
-                    # Final check
+                    # Check final state
                     STAT.poll()
                     print(f"Final state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task state: {STAT.task_state}")
 
                     if STAT.enabled:
                         self.w.enableButton.setText("Disable")
                         self.w.enableButton.setStyleSheet("background-color: green;")
-                        print("SUCCESS! Machine is enabled and ready to jog!")
+                        print("SUCCESS! Machine is enabled!")
+
+                        # Try to home automatically if not homed
+                        if not STAT.homed[0]:
+                            print("Joint 0 not homed, sending home command...")
+                            COMMAND.home(0)
                     else:
-                        print("Machine still not enabled. May need to home first.")
-                        # Try to home automatically
-                        print("Attempting to home all joints...")
-                        COMMAND.home(0)  # Home joint 0
+                        print("Machine not fully enabled yet")
+                        print(f"Task state value: {STAT.task_state}")
+                        print(f"STATE_ON value: {linuxcnc.STATE_ON}")
+
+                        # Force it one more time
+                        print("Forcing machine ON state...")
+                        COMMAND.state(linuxcnc.STATE_ON)
                 else:
-                    print("ERROR: Could not reset E-stop!")
+                    print("ERROR: Could not reset E-stop after 3 attempts!")
+                    print("This might be a HAL configuration issue.")
                     self.w.enableButton.setChecked(False)
 
             else:
@@ -92,10 +114,12 @@ class HandlerClass:
                 self.w.enableButton.setText("Enable")
                 self.w.enableButton.setStyleSheet("")
                 print("Machine disabled")
+
         except Exception as e:
             print(f"Error in enable_clicked: {e}")
             import traceback
             traceback.print_exc()
+            self.w.enableButton.setChecked(False)
 
     def stop_clicked(self):
         """Handle stop button click"""

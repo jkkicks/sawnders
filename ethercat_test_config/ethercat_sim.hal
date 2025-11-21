@@ -14,3 +14,6 @@ net x-pos-cmd joint.0.motor-pos-cmd => joint.0.motor-pos-fb
 
 # Simple enable chain
 net x-enable joint.0.amp-enable-out
+
+# E-stop loopback - connect e-stop loop for simulation
+net estop-loop iocontrol.0.user-enable-out iocontrol.0.emc-enable-in
