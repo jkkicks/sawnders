@@ -47,13 +47,25 @@ class HandlerClass:
             STAT.poll()
             if self.w.enableButton.isChecked():
                 print("Attempting to enable machine...")
-                # Reset E-stop
+                print(f"Current state - E-stop: {STAT.estop}, Enabled: {STAT.enabled}, Task state: {STAT.task_state}")
+
+                # Reset E-stop first
                 COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
-                # Turn on
+                COMMAND.wait_complete(1.0)  # Wait up to 1 second
+
+                # Then turn on
                 COMMAND.state(linuxcnc.STATE_ON)
-                self.w.enableButton.setText("Disable")
-                self.w.enableButton.setStyleSheet("background-color: green;")
-                print("Machine should be enabled now")
+                COMMAND.wait_complete(1.0)  # Wait up to 1 second
+
+                # Check if it worked
+                STAT.poll()
+                if STAT.enabled:
+                    self.w.enableButton.setText("Disable")
+                    self.w.enableButton.setStyleSheet("background-color: green;")
+                    print("Machine SUCCESSFULLY enabled!")
+                else:
+                    print(f"Failed to enable - E-stop: {STAT.estop}, Enabled: {STAT.enabled}")
+                    self.w.enableButton.setChecked(False)
             else:
                 print("Disabling machine...")
                 COMMAND.state(linuxcnc.STATE_OFF)
@@ -119,7 +131,24 @@ class HandlerClass:
         try:
             STAT.poll()
             pos = STAT.position[0]
-            self.w.positionDisplay.setText(f"{pos:.3f}")
+
+            # Show position and state
+            if STAT.estop:
+                self.w.positionDisplay.setText("E-STOP")
+            elif not STAT.enabled:
+                self.w.positionDisplay.setText("DISABLED")
+            else:
+                self.w.positionDisplay.setText(f"{pos:.3f}")
+
+            # Keep button state in sync
+            if STAT.enabled and not self.w.enableButton.isChecked():
+                self.w.enableButton.setChecked(True)
+                self.w.enableButton.setText("Disable")
+                self.w.enableButton.setStyleSheet("background-color: green;")
+            elif not STAT.enabled and self.w.enableButton.isChecked():
+                self.w.enableButton.setChecked(False)
+                self.w.enableButton.setText("Enable")
+                self.w.enableButton.setStyleSheet("")
         except:
             pass
 
