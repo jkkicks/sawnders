@@ -3,20 +3,25 @@
 # Minimal code for single axis jog control
 
 from PyQt5.QtCore import Qt, QTimer
-from qtvcp.core import Status, Command
+from qtvcp.core import Status
+from qtvcp import logger
+import linuxcnc
+
+# Set up logging
+LOG = logger.getLogger(__name__)
 
 STATUS = Status()
-COMMAND = Command()
+COMMAND = linuxcnc.command()
 
 class HandlerClass:
     def __init__(self, halcomp, widgets, paths):
         self.hal = halcomp
         self.w = widgets
+        self.stat = linuxcnc.stat()
 
         # Create HAL pins for jogging
         self.hal.newpin("jog-pos", self.hal.HAL_BIT, self.hal.HAL_OUT)
         self.hal.newpin("jog-neg", self.hal.HAL_BIT, self.hal.HAL_OUT)
-        self.hal.newpin("position", self.hal.HAL_FLOAT, self.hal.HAL_IN)
 
         # Timer for position updates
         self.timer = QTimer()
@@ -38,31 +43,37 @@ class HandlerClass:
         if positive:
             self.hal["jog-pos"] = True
             self.hal["jog-neg"] = False
+            COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, 10)  # X axis, positive, 10mm/s
         else:
             self.hal["jog-pos"] = False
             self.hal["jog-neg"] = True
+            COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, -10)  # X axis, negative, 10mm/s
 
     def stop_jog(self):
         """Stop jogging"""
         self.hal["jog-pos"] = False
         self.hal["jog-neg"] = False
+        COMMAND.jog(linuxcnc.JOG_STOP, 0, 0)
 
     def toggle_enable(self):
         """Toggle machine enable"""
+        self.stat.poll()
         if self.w.enableButton.isChecked():
-            COMMAND.state(self.COMMAND.STATE_ON)
+            COMMAND.state(linuxcnc.STATE_ESTOP_RESET)
+            COMMAND.state(linuxcnc.STATE_ON)
         else:
-            COMMAND.state(self.COMMAND.STATE_OFF)
+            COMMAND.state(linuxcnc.STATE_OFF)
 
     def emergency_stop(self):
         """Emergency stop"""
-        COMMAND.state(self.COMMAND.STATE_ESTOP)
+        COMMAND.state(linuxcnc.STATE_ESTOP)
         self.stop_jog()
 
     def update_position(self):
         """Update position display"""
         try:
-            pos = STATUS.get_position()[0]  # Get X axis position
+            self.stat.poll()
+            pos = self.stat.position[0]  # Get X axis position
             self.w.positionDisplay.setText(f"{pos:.3f}")
         except:
             pass
