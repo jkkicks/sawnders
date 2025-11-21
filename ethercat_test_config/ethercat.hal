@@ -6,7 +6,8 @@ loadrt lcec
 addf lcec.0.read servo-thread
 addf lcec.0.write servo-thread
 
-# Load motion controller (1 joint)
+# Load trivkins kinematics and motion controller
+loadrt trivkins coordinates=X
 loadrt motmod servo_period_nsec=1000000 num_joints=1
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
