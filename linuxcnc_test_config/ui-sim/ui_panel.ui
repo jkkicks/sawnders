@@ -41,21 +41,25 @@ QTabWidget::pane {
 
 QTabBar::tab {
     background: transparent;
-    color: white;
-    font-size: 24px;
-    padding: 12px 25px;
-    margin-right: 8px;
+    color: #cccccc;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin-right: 5px;
     border: none;
-    min-width: 120px;
+    min-width: 100px;
 }
 
 QTabBar::tab:selected {
     background-color: #b83219;
+    color: white;
     border-radius: 5px;
+    font-weight: bold;
 }
 
-QTabBar::tab:hover {
-    background-color: rgba(184, 50, 25, 0.5);
+QTabBar::tab:hover:!selected {
+    background-color: rgba(184, 50, 25, 0.3);
+    color: white;
 }
 
 /* Status chips in header */
@@ -86,12 +90,12 @@ QLabel#versionLabel {
 /* Button base styles */
 QPushButton {
     border: none;
-    border-radius: 10px;
-    font-size: 32px;
+    border-radius: 8px;
+    font-size: 24px;
     font-weight: bold;
     color: white;
-    min-height: 70px;
-    padding: 8px 15px;
+    min-height: 60px;
+    padding: 5px 10px;
 }
 
 QPushButton:pressed {
@@ -143,12 +147,13 @@ QPushButton#saveButton:hover {
 
 /* G-code preview */
 QTextEdit#gcodePreview {
-    background-color: #070707;
+    background-color: #0a0a0a;
     color: #cecece;
     font-family: 'Courier New', monospace;
-    font-size: 18px;
-    border: none;
-    padding: 15px;
+    font-size: 14px;
+    border: 1px solid #2a2a2a;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 /* Visualizer frame */
@@ -160,16 +165,17 @@ QFrame#visualizerFrame {
 
 /* Manual mode readouts */
 QLineEdit {
-    background-color: #505050;
-    color: white;
-    font-size: 24px;
-    border-radius: 10px;
-    padding: 15px;
-    border: none;
+    background-color: #3a3a3a;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 12px 20px;
+    border: 1px solid #505050;
 }
 
 QLineEdit:read-only {
-    background-color: #505050;
+    background-color: #3a3a3a;
 }
 
 /* Settings frames */
@@ -467,34 +473,34 @@ p, li { white-space: pre-wrap; }
          </attribute>
          <layout class="QVBoxLayout" name="manualMainVLayout">
           <property name="spacing">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="leftMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="topMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="bottomMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="manualTopLayout" stretch="1,1">
             <property name="spacing">
-             <number>40</number>
+             <number>20</number>
             </property>
             <item>
              <layout class="QVBoxLayout" name="manualButtonsLayout">
               <property name="spacing">
-               <number>15</number>
+               <number>10</number>
               </property>
               <item>
                <layout class="QHBoxLayout" name="headControlLayout">
                 <property name="spacing">
-                 <number>15</number>
+                 <number>10</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="liftHeadButton">
@@ -527,7 +533,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <layout class="QHBoxLayout" name="fixedViceLayout">
                 <property name="spacing">
-                 <number>15</number>
+                 <number>10</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="clampFVButton">
@@ -562,7 +568,7 @@ Fixed Vice</string>
               <item>
                <layout class="QHBoxLayout" name="movingViceLayout">
                 <property name="spacing">
-                 <number>15</number>
+                 <number>10</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="clampMVButton">
@@ -679,27 +685,27 @@ Moving Vice</string>
          </attribute>
          <layout class="QVBoxLayout" name="settingsMainLayout">
           <property name="spacing">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="leftMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="topMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="rightMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <property name="bottomMargin">
-           <number>20</number>
+           <number>15</number>
           </property>
           <item>
            <layout class="QGridLayout" name="settingsGrid">
             <property name="horizontalSpacing">
-             <number>40</number>
+             <number>20</number>
             </property>
             <property name="verticalSpacing">
-             <number>40</number>
+             <number>20</number>
             </property>
             <item row="0" column="0">
              <widget class="QFrame" name="settingFrame1">
@@ -718,19 +724,19 @@ border-radius: 20px;</string>
               </property>
               <layout class="QHBoxLayout" name="setting1Layout">
                <property name="spacing">
-                <number>20</number>
+                <number>15</number>
                </property>
                <property name="leftMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="topMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="rightMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="bottomMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <item>
                 <widget class="QLabel" name="setting1Label">
@@ -775,16 +781,16 @@ border-radius: 20px;</string>
                 <number>20</number>
                </property>
                <property name="leftMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="topMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="rightMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="bottomMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <item>
                 <widget class="QLabel" name="setting2Label">
@@ -825,16 +831,16 @@ border-radius: 20px;</string>
                 <number>20</number>
                </property>
                <property name="leftMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="topMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="rightMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="bottomMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <item>
                 <widget class="QLabel" name="setting3Label">
@@ -875,16 +881,16 @@ border-radius: 20px;</string>
                 <number>20</number>
                </property>
                <property name="leftMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="topMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="rightMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <property name="bottomMargin">
-                <number>30</number>
+                <number>20</number>
                </property>
                <item>
                 <widget class="QLabel" name="setting4Label">
