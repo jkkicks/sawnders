@@ -135,12 +135,23 @@ class HandlerClass:
     def home_clicked(self):
         """Handle home button click"""
         print("Home button clicked!")
+        import time
         try:
             STAT.poll()
             if STAT.enabled:
-                print("Homing all joints...")
+                print("Homing joint 0...")
                 COMMAND.home(0)  # Home joint 0 (X axis)
-                print("Homing command sent")
+
+                # Wait a moment for homing to complete
+                time.sleep(0.5)
+                STAT.poll()
+
+                if STAT.homed[0]:
+                    print("SUCCESS! Joint 0 is now homed!")
+                    self.w.positionDisplay.setText("HOMED: 0.000")
+                else:
+                    print("Homing in progress or failed...")
+                    print(f"Homed status: {STAT.homed}")
             else:
                 print("Machine must be enabled before homing")
         except Exception as e:
@@ -220,7 +231,11 @@ class HandlerClass:
             elif not STAT.enabled:
                 self.w.positionDisplay.setText("DISABLED")
             else:
-                self.w.positionDisplay.setText(f"{pos:.3f}")
+                # Show homed status with position
+                if STAT.homed[0]:
+                    self.w.positionDisplay.setText(f"✓ {pos:.3f}")
+                else:
+                    self.w.positionDisplay.setText(f"? {pos:.3f}")
 
             # Keep button state in sync
             if STAT.enabled and not self.w.enableButton.isChecked():
@@ -231,6 +246,12 @@ class HandlerClass:
                 self.w.enableButton.setChecked(False)
                 self.w.enableButton.setText("Enable")
                 self.w.enableButton.setStyleSheet("")
+
+            # Update home button color based on homed status
+            if STAT.homed[0]:
+                self.w.homeButton.setStyleSheet("background-color: lightgreen;")
+            else:
+                self.w.homeButton.setStyleSheet("")
         except:
             pass
 
