@@ -1,5 +1,5 @@
 # SUPER SIMPLE HAL Configuration for Single EtherCAT Axis
-# Minimal setup - just what's needed to jog one axis
+# For real EtherCAT hardware
 
 # Load the EtherCAT driver (LinuxCNC-EtherCAT)
 loadrt lcec
@@ -12,11 +12,6 @@ loadrt motmod servo_period_nsec=1000000 num_joints=1
 addf motion-command-handler servo-thread
 addf motion-controller servo-thread
 
-# Create simple jog signals
-net jog-x-pos halui.axis.x.plus
-net jog-x-neg halui.axis.x.minus
-net jog-speed halui.axis.jog-speed
-
 # Connect EtherCAT drive to motion
 # Assuming basic EtherCAT servo drive at position 0
 net x-pos-cmd joint.0.motor-pos-cmd => lcec.0.0.pos-cmd
@@ -25,11 +20,10 @@ net x-pos-fb lcec.0.0.pos-fb => joint.0.motor-pos-fb
 # Simple enable chain
 net x-enable joint.0.amp-enable-out => lcec.0.0.enable
 
-# Basic setup for joint 0
-setp joint.0.jog-vel-mode 1
-setp halui.axis.jog-speed 10
+# E-stop loopback - connect e-stop loop
+# For real hardware, you might connect this to a physical E-stop
+net estop-loop iocontrol.0.user-enable-out iocontrol.0.emc-enable-in
 
-# Machine on/off
-net machine-on halui.machine.on
-net machine-off halui.machine.off
-net machine-is-on halui.machine.is-on
+# Home switch - connect to your actual home switch input if available
+# For now, using the same instant home as simulator
+net home-x joint.0.home-sw-in <= joint.0.homing

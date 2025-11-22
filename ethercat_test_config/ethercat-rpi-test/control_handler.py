@@ -139,6 +139,17 @@ class HandlerClass:
         try:
             STAT.poll()
             if STAT.enabled:
+                # Check if already homed
+                if STAT.homed[0]:
+                    print("Joint 0 is already homed!")
+                    return
+
+                # Switch to joint mode for homing
+                print("Switching to joint mode for homing...")
+                COMMAND.mode(linuxcnc.MODE_MANUAL)
+                COMMAND.teleop_enable(0)  # Disable teleop
+                time.sleep(0.1)
+
                 print("Homing joint 0...")
                 COMMAND.home(0)  # Home joint 0 (X axis)
 
@@ -148,10 +159,13 @@ class HandlerClass:
 
                 if STAT.homed[0]:
                     print("SUCCESS! Joint 0 is now homed!")
+                    # Brief display message
                     self.w.positionDisplay.setText("HOMED: 0.000")
+                    time.sleep(1)
+                    # Then go back to normal display
+                    self.w.positionDisplay.setText("✓ 0.000")
                 else:
-                    print("Homing in progress or failed...")
-                    print(f"Homed status: {STAT.homed}")
+                    print("Homing may still be in progress...")
             else:
                 print("Machine must be enabled before homing")
         except Exception as e:
