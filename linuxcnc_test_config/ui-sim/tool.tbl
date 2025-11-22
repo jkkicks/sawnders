@@ -1,0 +1,4 @@
+; Tool table for UI simulator
+T1 P1 D0.125 Z1.0 ;1/8 end mill
+T2 P2 D0.250 Z1.5 ;1/4 end mill
+T3 P3 D0.500 Z2.0 ;1/2 end mill

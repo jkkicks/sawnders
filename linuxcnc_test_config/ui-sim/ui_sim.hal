@@ -1,0 +1,42 @@
+# Minimal HAL configuration for UI testing
+# This provides just enough to run LinuxCNC in simulation mode
+
+# Load real-time components
+loadrt trivkins
+loadrt motmod servo_period_nsec=1000000 num_joints=3
+loadrt sim_home_switch names=sim-home-x,sim-home-y,sim-home-z
+
+# Add servo thread
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+addf sim-home-x.update servo-thread
+addf sim-home-y.update servo-thread
+addf sim-home-z.update servo-thread
+
+# Set up simulated position feedback
+net x-pos-fb joint.0.motor-pos-fb => joint.0.motor-pos-cmd
+net y-pos-fb joint.1.motor-pos-fb => joint.1.motor-pos-cmd
+net z-pos-fb joint.2.motor-pos-fb => joint.2.motor-pos-cmd
+
+# Connect enable signals
+net x-enable joint.0.amp-enable-out
+net y-enable joint.1.amp-enable-out
+net z-enable joint.2.amp-enable-out
+
+# Connect home switches (simulated)
+net x-home-sw sim-home-x.home-sw => joint.0.home-sw-in
+net y-home-sw sim-home-y.home-sw => joint.1.home-sw-in
+net z-home-sw sim-home-z.home-sw => joint.2.home-sw-in
+
+# Set simulated home switch positions
+setp sim-home-x.home-pos 0
+setp sim-home-y.home-pos 0
+setp sim-home-z.home-pos 0
+
+# E-stop and machine power
+net estop-out <= iocontrol.0.user-enable-out
+net estop-out => iocontrol.0.emc-enable-in
+
+# Tool change (simulated - just loop back)
+net tool-change iocontrol.0.tool-change => iocontrol.0.tool-changed
+net tool-prep iocontrol.0.tool-prepare => iocontrol.0.tool-prepared

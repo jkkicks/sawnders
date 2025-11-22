@@ -1,4 +1,3 @@
-# Planning directory
 
 # Claude-related files and directories
 claude*
@@ -9,3 +8,6 @@ claude*
 *.claude
 .claude-*
 claude-*
+
+.vscode/
+*reference/

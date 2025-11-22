@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1400</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>768</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>John Sawnders Control Panel</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Main window background */
+QWidget#Form {
+    background-color: #1c1c1c;
+}
+
+/* Global text color */
+QWidget {
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* Tab Widget Styling */
+QTabWidget::pane {
+    background-color: #121212;
+    border: none;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+}
+
+QTabBar::tab {
+    background: transparent;
+    color: white;
+    font-size: 24px;
+    padding: 12px 25px;
+    margin-right: 8px;
+    border: none;
+    min-width: 120px;
+}
+
+QTabBar::tab:selected {
+    background-color: #b83219;
+    border-radius: 5px;
+}
+
+QTabBar::tab:hover {
+    background-color: rgba(184, 50, 25, 0.5);
+}
+
+/* Status chips in header */
+QLabel#statusChip1, QLabel#statusChip2, QLabel#statusChip3 {
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 9px;
+    min-width: 80px;
+}
+
+QLabel#statusChip1 {
+    background-color: #ffa500;
+}
+
+QLabel#statusChip2 {
+    background-color: #5da21f;
+}
+
+QLabel#statusChip3 {
+    background-color: #b83219;
+}
+
+QLabel#versionLabel {
+    font-size: 16px;
+    color: white;
+}
+
+/* Button base styles */
+QPushButton {
+    border: none;
+    border-radius: 10px;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    min-height: 70px;
+    padding: 8px 15px;
+}
+
+QPushButton:pressed {
+    opacity: 0.8;
+}
+
+/* Specific button colors */
+QPushButton#startButton, QPushButton#cutButton, QPushButton#liftHeadButton {
+    background-color: #5da21f;
+}
+
+QPushButton#startButton:hover, QPushButton#cutButton:hover, QPushButton#liftHeadButton:hover {
+    background-color: #6db525;
+}
+
+QPushButton#pauseButton, QPushButton#lowerHeadButton,
+QPushButton#unclampFVButton, QPushButton#unclampMVButton {
+    background-color: #2b2b2b;
+}
+
+QPushButton#pauseButton:hover, QPushButton#lowerHeadButton:hover,
+QPushButton#unclampFVButton:hover, QPushButton#unclampMVButton:hover {
+    background-color: #3b3b3b;
+}
+
+QPushButton#stopButton, QPushButton#manualStopButton, QPushButton#cancelButton {
+    background-color: #b83219;
+}
+
+QPushButton#stopButton:hover, QPushButton#manualStopButton:hover, QPushButton#cancelButton:hover {
+    background-color: #c8421f;
+}
+
+QPushButton#clampFVButton, QPushButton#clampMVButton {
+    background-color: #ffa500;
+}
+
+QPushButton#clampFVButton:hover, QPushButton#clampMVButton:hover {
+    background-color: #ffb520;
+}
+
+QPushButton#saveButton {
+    background-color: #6e6e6e;
+}
+
+QPushButton#saveButton:hover {
+    background-color: #7e7e7e;
+}
+
+/* G-code preview */
+QTextEdit#gcodePreview {
+    background-color: #070707;
+    color: #cecece;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    border: none;
+    padding: 15px;
+}
+
+/* Visualizer frame */
+QFrame#visualizerFrame {
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    border: 1px solid #3c3c3c;
+}
+
+/* Manual mode readouts */
+QLineEdit {
+    background-color: #505050;
+    color: white;
+    font-size: 24px;
+    border-radius: 10px;
+    padding: 15px;
+    border: none;
+}
+
+QLineEdit:read-only {
+    background-color: #505050;
+}
+
+/* Settings frames */
+QFrame.settingFrame {
+    background-color: #a5a5a5;
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 120px;
+}
+
+
+QCheckBox {
+    font-size: 24px;
+}
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: #c8c8c8;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #5da21f;
+}
+
+/* Frame backgrounds */
+QFrame#topBar {
+    background-color: #1c1c1c;
+}
+
+QFrame#contentArea {
+    background-color: #121212;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>10</number>
+   </property>
+   <property name="topMargin">
+    <number>10</number>
+   </property>
+   <property name="rightMargin">
+    <number>10</number>
+   </property>
+   <property name="bottomMargin">
+    <number>10</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="topBar">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>60</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>60</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <layout class="QHBoxLayout" name="topBarLayout">
+      <property name="spacing">
+       <number>15</number>
+      </property>
+      <item>
+       <spacer name="leftSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusChip1">
+        <property name="text">
+         <string>Status 1</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusChip2">
+        <property name="text">
+         <string>Status 2</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="statusChip3">
+        <property name="text">
+         <string>Status 3</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="versionLabel">
+        <property name="text">
+         <string>John Sawnders v0.3.21</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="contentArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <layout class="QVBoxLayout" name="contentLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <property name="tabPosition">
+         <enum>QTabWidget::North</enum>
+        </property>
+        <widget class="QWidget" name="autoTab">
+         <attribute name="title">
+          <string>Auto Mode</string>
+         </attribute>
+         <layout class="QHBoxLayout" name="autoMainLayout" stretch="1,1">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="leftControlLayout">
+            <property name="spacing">
+             <number>15</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="startPauseLayout">
+              <property name="spacing">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="startButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Start</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pauseButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Pause</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="stopButton">
+              <property name="text">
+               <string>Stop</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="leftSpacer2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="rightGcodeLayout">
+            <property name="spacing">
+             <number>15</number>
+            </property>
+            <item>
+             <widget class="QTextEdit" name="gcodePreview">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>1</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name="qrichtext" content="1" /&gt;&lt;style type="text/css"&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=" font-family:'Courier New','monospace'; font-size:18px; font-weight:400; font-style:normal;"&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;1    &lt;/span&gt;&lt;span style=" color:#6e6e6e;"&gt;(v1.6-af)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;2    &lt;/span&gt;&lt;span style=" color:#cecece;"&gt;G90 G94&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;3    &lt;/span&gt;&lt;span style=" color:#cecece;"&gt;G17&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;4    &lt;/span&gt;&lt;span style=" color:#cecece;"&gt;G20&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;5    &lt;/span&gt;&lt;span style=" color:#cecece;"&gt;H0&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;6&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;7    &lt;/span&gt;&lt;span style=" color:#6e6e6e;"&gt;(2D Profile 1)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"&gt;&lt;span style=" color:#6e6e6e;"&gt;8    &lt;/span&gt;&lt;span style=" color:#cecece;"&gt;G0 X-15.451 Y3.5767&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="visualizerFrame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>1</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>300</height>
+               </size>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="manualTab">
+         <attribute name="title">
+          <string>Manual Mode</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="manualMainVLayout">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="manualTopLayout" stretch="1,1">
+            <property name="spacing">
+             <number>40</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="manualButtonsLayout">
+              <property name="spacing">
+               <number>15</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" name="headControlLayout">
+                <property name="spacing">
+                 <number>15</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="liftHeadButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Lift Head</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="lowerHeadButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Lower Head</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="fixedViceLayout">
+                <property name="spacing">
+                 <number>15</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="clampFVButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Clamp
+Fixed Vice</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="unclampFVButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Unclamp
+Fixed Vice</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="movingViceLayout">
+                <property name="spacing">
+                 <number>15</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="clampMVButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Clamp
+Moving Vice</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="unclampMVButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Unclamp
+Moving Vice</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="readoutsLayout">
+              <property name="spacing">
+               <number>15</number>
+              </property>
+              <item>
+               <widget class="QLineEdit" name="headHeightReadout">
+                <property name="text">
+                 <string>2.135"      Head Height</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="zAxisReadout">
+                <property name="text">
+                 <string>-8.728"      Z Axis</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="readoutsSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="manualMiddleSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cutButton">
+            <property name="text">
+             <string>Cut!</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="manualStopButton">
+            <property name="text">
+             <string>Stop</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="settingsTab">
+         <attribute name="title">
+          <string>Settings</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="settingsMainLayout">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="settingsGrid">
+            <property name="horizontalSpacing">
+             <number>40</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>40</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QFrame" name="settingFrame1">
+              <property name="styleSheet">
+               <string notr="true">background-color: #a5a5a5;
+border-radius: 20px;</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <layout class="QHBoxLayout" name="setting1Layout">
+               <property name="spacing">
+                <number>20</number>
+               </property>
+               <property name="leftMargin">
+                <number>30</number>
+               </property>
+               <property name="topMargin">
+                <number>30</number>
+               </property>
+               <property name="rightMargin">
+                <number>30</number>
+               </property>
+               <property name="bottomMargin">
+                <number>30</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="setting1Label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">font-size: 28px;
+color: white;</string>
+                 </property>
+                 <property name="text">
+                  <string>Setting 1</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="setting1Toggle"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QFrame" name="settingFrame2">
+              <property name="styleSheet">
+               <string notr="true">background-color: #a5a5a5;
+border-radius: 20px;</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <layout class="QHBoxLayout" name="setting2Layout">
+               <property name="spacing">
+                <number>20</number>
+               </property>
+               <property name="leftMargin">
+                <number>30</number>
+               </property>
+               <property name="topMargin">
+                <number>30</number>
+               </property>
+               <property name="rightMargin">
+                <number>30</number>
+               </property>
+               <property name="bottomMargin">
+                <number>30</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="setting2Label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Setting 2</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="setting2Toggle"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QFrame" name="settingFrame3">
+              <property name="styleSheet">
+               <string notr="true">background-color: #a5a5a5;
+border-radius: 20px;</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <layout class="QHBoxLayout" name="setting3Layout">
+               <property name="spacing">
+                <number>20</number>
+               </property>
+               <property name="leftMargin">
+                <number>30</number>
+               </property>
+               <property name="topMargin">
+                <number>30</number>
+               </property>
+               <property name="rightMargin">
+                <number>30</number>
+               </property>
+               <property name="bottomMargin">
+                <number>30</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="setting3Label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Setting 3</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="setting3Toggle"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QFrame" name="settingFrame4">
+              <property name="styleSheet">
+               <string notr="true">background-color: #a5a5a5;
+border-radius: 20px;</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <layout class="QHBoxLayout" name="setting4Layout">
+               <property name="spacing">
+                <number>20</number>
+               </property>
+               <property name="leftMargin">
+                <number>30</number>
+               </property>
+               <property name="topMargin">
+                <number>30</number>
+               </property>
+               <property name="rightMargin">
+                <number>30</number>
+               </property>
+               <property name="bottomMargin">
+                <number>30</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="setting4Label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Setting 4</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="setting4Toggle"/>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="settingsSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveButton">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cancelButton">
+            <property name="text">
+             <string>Cancel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
