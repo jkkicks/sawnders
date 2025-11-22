@@ -163,21 +163,23 @@ class HandlerClass:
         try:
             STAT.poll()
             if STAT.enabled:
-                # Try axis mode jogging (axis 0 = X)
-                # jog(command, axis_or_joint, axis_num, velocity)
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, 10)  # Axis mode (1), axis 0 (X), +10 units/sec
+                # Check if we're in teleop mode (after homing) or joint mode
+                if STAT.motion_mode == linuxcnc.TRAJ_MODE_TELEOP:
+                    # In teleop mode - jog the axis
+                    print("Teleop mode - jogging axis X")
+                    COMMAND.teleop_enable(1)  # Enable teleop jogging
+                    COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, 10)  # Axis mode, X axis, +10 units/sec
+                else:
+                    # In joint mode - jog the joint
+                    print("Joint mode - jogging joint 0")
+                    COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, 10)  # Joint mode, joint 0, +10 units/sec
+
                 self.hal["jog-pos"] = True
-                print("Jogging X axis positive")
+                print("Jogging positive")
             else:
                 print("Machine not enabled, cannot jog")
         except Exception as e:
             print(f"Error in jog_pos: {e}")
-            # Try alternative joint jog format
-            try:
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 10)
-                print("Using alternative jog format")
-            except:
-                pass
 
     def jog_neg_pressed(self):
         """Start negative jog"""
@@ -185,39 +187,40 @@ class HandlerClass:
         try:
             STAT.poll()
             if STAT.enabled:
-                # Try axis mode jogging (axis 0 = X)
-                # jog(command, axis_or_joint, axis_num, velocity)
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, -10)  # Axis mode (1), axis 0 (X), -10 units/sec
+                # Check if we're in teleop mode (after homing) or joint mode
+                if STAT.motion_mode == linuxcnc.TRAJ_MODE_TELEOP:
+                    # In teleop mode - jog the axis
+                    print("Teleop mode - jogging axis X")
+                    COMMAND.teleop_enable(1)  # Enable teleop jogging
+                    COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 1, 0, -10)  # Axis mode, X axis, -10 units/sec
+                else:
+                    # In joint mode - jog the joint
+                    print("Joint mode - jogging joint 0")
+                    COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, 0, -10)  # Joint mode, joint 0, -10 units/sec
+
                 self.hal["jog-neg"] = True
-                print("Jogging X axis negative")
+                print("Jogging negative")
             else:
                 print("Machine not enabled, cannot jog")
         except Exception as e:
             print(f"Error in jog_neg: {e}")
-            # Try alternative joint jog format
-            try:
-                COMMAND.jog(linuxcnc.JOG_CONTINUOUS, 0, -10)
-                print("Using alternative jog format")
-            except:
-                pass
 
     def jog_released(self):
         """Stop jogging"""
         print("Jog released")
         try:
-            # Stop axis 0 (X)
-            COMMAND.jog(linuxcnc.JOG_STOP, 1, 0)  # Axis mode, axis 0
+            STAT.poll()
+            # Stop based on current mode
+            if STAT.motion_mode == linuxcnc.TRAJ_MODE_TELEOP:
+                COMMAND.jog(linuxcnc.JOG_STOP, 1, 0)  # Stop axis 0
+            else:
+                COMMAND.jog(linuxcnc.JOG_STOP, 0, 0)  # Stop joint 0
+
             self.hal["jog-pos"] = False
             self.hal["jog-neg"] = False
             print("Jog stopped")
         except Exception as e:
             print(f"Error stopping jog: {e}")
-            # Try alternative stop format
-            try:
-                COMMAND.jog(linuxcnc.JOG_STOP, 0)
-                print("Using alternative stop format")
-            except:
-                pass
 
     def update_position(self):
         """Update position display"""
